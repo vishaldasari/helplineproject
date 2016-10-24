@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "755814614482",
+    "firebase_url": "https://helpline-8d2b2.firebaseio.com",
+    "project_id": "helpline-8d2b2",
+    "storage_bucket": "helpline-8d2b2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:755814614482:android:d15d1e58ae977c59",
+        "android_client_info": {
+          "package_name": "org.vishal.helplineapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "755814614482-lgp78gmhcae5k40k4ngbpjk5npg517cu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.vishal.helplineapp",
+            "certificate_hash": "92272113D104AA567FC762C2971342795670D35D"
+          }
+        },
+        {
+          "client_id": "755814614482-l1eiqm2klorqigls2oukbi5mv2dmus9p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8EbB-5R_ySPSFUN5E08t1kR-Pd26yOW8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "755814614482-l1eiqm2klorqigls2oukbi5mv2dmus9p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
