@@ -14,4 +14,7 @@
         completions."
     </string>
     <string name="auth_failed">Authorization Failed</string>
+    <string name="title_activity_volunteer_tabbed">VolunteerTabbedActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>

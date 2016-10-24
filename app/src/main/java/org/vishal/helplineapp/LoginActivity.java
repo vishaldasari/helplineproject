@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -108,10 +109,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    mLoginSuccess = false;
 
                 } else {
-                    mLoginSuccess = true;
+
                 }
                 // ...
             }
@@ -237,17 +237,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                                 mLoginSuccess =  false;
                             }
-                            mLoginSuccess = true;
+                            else
+                            {
+                                mLoginSuccess = true;
+                            }
                             mAuthInProgress = false;
+                            showProgress(false);
+                            if(mLoginSuccess) {
+                                Toast.makeText(LoginActivity.this, "Success",
+                                        Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(getApplicationContext(), VolunteerTabbedActivity.class));
+                            }
+                            else
+                                Toast.makeText(LoginActivity.this, R.string.auth_failed,
+                                        Toast.LENGTH_SHORT).show();
                         }
                     });
-            showProgress(false);
-            if(mLoginSuccess)
-                Toast.makeText(LoginActivity.this, "Success",
-                    Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(LoginActivity.this, R.string.auth_failed,
-                        Toast.LENGTH_SHORT).show();
+
 
         }
     }
