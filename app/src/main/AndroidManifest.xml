@@ -28,10 +28,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".VolunteerTabbedActivity"
-            android:label="@string/title_activity_volunteer_tabbed"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <receiver
             android:name=".DeviceAdminDemo"
@@ -50,11 +46,15 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".TService"></service>
+        <service android:name=".TService" />
 
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings" />
+        <activity
+            android:name=".IssueViewActivity"
+            android:label="@string/title_activity_issue_view"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

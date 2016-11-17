@@ -23,6 +23,8 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -126,7 +128,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 }
                             });
 
-                    startActivity(new Intent(getApplicationContext(), VolunteerTabbedActivity.class));
+                    startActivity(new Intent(getApplicationContext(), IssueViewActivity.class));
                 } else {
                     Toast.makeText(LoginActivity.this, "User is now logged out", Toast.LENGTH_SHORT).show();
                 }
@@ -264,7 +266,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             if(mLoginSuccess) {
                                 Toast.makeText(LoginActivity.this, "Success",
                                         Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getApplicationContext(), VolunteerTabbedActivity.class));
+                                startActivity(new Intent(getApplicationContext(), IssueViewActivity.class));
                             }
                             else
                                 Toast.makeText(LoginActivity.this, R.string.auth_failed,
