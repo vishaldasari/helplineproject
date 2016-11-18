@@ -19,7 +19,9 @@
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -35,16 +37,19 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingTop="20dp">
+                    android:gravity="top"
+                    android:layout_gravity="top">
 
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:text="Issue"
                         android:ems="10"
                         android:id="@+id/issueTV"
-                        android:layout_weight="1"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                        android:layout_weight="2"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:gravity="top"
+                        android:paddingTop="6dp" />
 
                     <Spinner
                         android:layout_width="match_parent"
@@ -69,7 +74,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Name"
+                        android:text="Issue Name"
                         android:ems="10"
                         android:layout_weight="2"
                         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -89,8 +94,41 @@
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingTop="30dp">
+                    android:layout_height="wrap_content"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:layout_width= "0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Number"
+                        android:ems="10"
+                        android:id="@+id/issueNumberTV"
+                        android:layout_weight="1"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
+                        android:ems="10"
+                        android:id="@+id/issueNumberEditText"
+                        android:layout_weight="1"
+                        android:elevation="10dp" />
+
+                    <Button
+                        android:text="Generate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/button3"
+                        android:layout_weight="1"
+                        android:onClick="onGenerateClick" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -132,15 +170,16 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/descET"
                         android:layout_weight="5"
-                        android:hint="Start Typing..."
-                        android:gravity="top" />
+                        android:gravity="top"
+                        android:elevation="10dp"
+                        android:hint = "@string/edittext_hint"/>
 
                 </LinearLayout>
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingTop="30dp">
+                    android:paddingTop="15dp">
 
                     <Button
                         android:text="Edit"
@@ -149,7 +188,8 @@
                         android:id="@+id/editbutton"
                         android:layout_weight="1"
                         android:layout_marginLeft="25dp"
-                        android:layout_marginRight="25dp" />
+                        android:layout_marginRight="25dp"
+                        android:onClick="onClickEditButton" />
 
                     <Button
                         android:text="Save"
@@ -158,7 +198,8 @@
                         android:id="@+id/savebutton"
                         android:layout_weight="1"
                         android:layout_marginLeft="25dp"
-                        android:layout_marginRight="25dp" />
+                        android:layout_marginRight="25dp"
+                        android:onClick="onClickSaveButton"/>
                 </LinearLayout>
 
             </LinearLayout>
