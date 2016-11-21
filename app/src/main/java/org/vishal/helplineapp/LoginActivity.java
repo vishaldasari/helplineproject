@@ -87,7 +87,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    attemptLogin(false);
                     return true;
                 }
                 return false;
@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                attemptLogin(false);
             }
         });
 
@@ -107,36 +107,29 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mAuth = FirebaseAuth.getInstance();
 
+        Button mRegister = (Button) findViewById(R.id.email_register_button);
+        mRegister.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptLogin(true);
+            }
+        });
+
+
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    Toast.makeText(LoginActivity.this, "User already signed in" + mAuth.getCurrentUser().getDisplayName() + " " + mAuth.getCurrentUser().getEmail() + " " , Toast.LENGTH_SHORT).show();
-
-                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                            .setDisplayName("Jane Q. User")
-                            .build();
-
-                    user.updateProfile(profileUpdates)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Log.d(TAG, "User profile updated.");
-                                    }
-                                }
-                            });
-
                     startActivity(new Intent(getApplicationContext(), IssueViewActivity.class));
                 } else {
                     Toast.makeText(LoginActivity.this, "User is now logged out", Toast.LENGTH_SHORT).show();
                 }
-
-                // ...
             }
         };
     }
+
+
 
     @Override
     protected void onStart() {
@@ -202,7 +195,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
+    private void attemptLogin(boolean register) {
         if(mAuthInProgress == true)
             return;
         // Reset errors.
@@ -243,38 +236,65 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // perform the user login attempt.
             showProgress(true);
             mAuthInProgress = true;
-            mAuth.signInWithEmailAndPassword(email,password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+            if(register) {
+                mAuth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
-                            // If sign in fails, display a message to the user. If sign in succeeds
-                            // the auth state listener will be notified and logic to handle the
-                            // signed in user can be handled in the listener.
-                            if (!task.isSuccessful()) {
-                                Log.w(TAG, "signInWithEmail:failed", task.getException());
+                                // If sign in fails, display a message to the user. If sign in succeeds
+                                // the auth state listener will be notified and logic to handle the
+                                // signed in user can be handled in the listener.
+                                if (!task.isSuccessful()) {
+                                    Toast.makeText(LoginActivity.this, "Registration failed. " + task.getException().getMessage() ,
+                                            Toast.LENGTH_LONG).show();
 
-                                mLoginSuccess =  false;
+                                    mLoginSuccess = false;
+                                }
+
+                                else {
+                                    mLoginSuccess = true;
+                                }
+                                mAuthInProgress = false;
+                                showProgress(false);
+                                if(mLoginSuccess) {
+                                    Toast.makeText(LoginActivity.this, "Success",
+                                            Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(getApplicationContext(), IssueViewActivity.class));
+                                }
                             }
-                            else
-                            {
-                                mLoginSuccess = true;
-                            }
-                            mAuthInProgress = false;
-                            showProgress(false);
-                            if(mLoginSuccess) {
-                                Toast.makeText(LoginActivity.this, "Success",
-                                        Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getApplicationContext(), IssueViewActivity.class));
-                            }
-                            else
-                                Toast.makeText(LoginActivity.this, R.string.auth_failed,
-                                        Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                        });
+            }
+            else {
+                mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
+                                // If sign in fails, display a message to the user. If sign in succeeds
+                                // the auth state listener will be notified and logic to handle the
+                                // signed in user can be handled in the listener.
+                                if (!task.isSuccessful()) {
+                                    Log.w(TAG, "signInWithEmail:failed", task.getException());
 
+                                    mLoginSuccess = false;
+                                } else {
+                                    mLoginSuccess = true;
+                                }
+                                mAuthInProgress = false;
+                                showProgress(false);
+                                if (mLoginSuccess) {
+                                    Toast.makeText(LoginActivity.this, "Success",
+                                            Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(getApplicationContext(), IssueViewActivity.class));
+                                } else
+                                    Toast.makeText(LoginActivity.this, R.string.auth_failed,
+                                            Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
         }
     }
 
