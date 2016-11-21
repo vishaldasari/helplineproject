@@ -10,14 +10,16 @@ public class Issue {
     private String m_reporter;
     private String m_description;
     private String m_number;
+    private String m_date;
 
     public Issue() {}
 
-    public Issue (String name,String number, String reporter , String description  ) {
+    public Issue (String name,String number, String reporter , String description, String date  ) {
         setName(name);
         setNumber(number);
         setReporter(reporter);
         setDescription(description);
+        setDate(date);
     }
 
 
@@ -54,5 +56,13 @@ public class Issue {
 
     public void setNumber(String m_number) {
         this.m_number = m_number;
+    }
+
+    public String getDate() {
+        return m_date;
+    }
+
+    public void setDate(String date) {
+        this.m_date = date;
     }
 }

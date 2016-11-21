@@ -83,7 +83,7 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textPersonName"
+                        android:inputType="textPersonName|textCapSentences"
                         android:ems="10"
                         android:id="@+id/nameET"
                         android:layout_weight="1"
@@ -94,28 +94,55 @@
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:weightSum="3">
 
                     <TextView
-                        android:layout_width= "0dp"
+                        android:layout_width= "match_parent"
                         android:layout_height="wrap_content"
                         android:text="Number"
                         android:ems="10"
-                        android:id="@+id/issueNumberTV"
-                        android:layout_weight="1"
+                        android:id="@+id/NumberTV"
+                        android:layout_weight="2"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                    <EditText
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textPersonName"
+                        android:inputType= "numberSigned"
                         android:enabled="false"
                         android:ems="10"
-                        android:id="@+id/issueNumberEditText"
+                        android:id="@+id/issueNumberTV"
                         android:layout_weight="1"
                         android:elevation="10dp"
                         android:hint= "@string/issueNumber_hint" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Date"
+                        android:ems="10"
+                        android:id="@+id/dateTV"
+                        android:layout_weight="2"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="datetime"
+                        android:ems="10"
+                        android:id="@+id/issueDateView"
+                        android:layout_weight="1"
+                        android:elevation="10dp"
+                        android:hint= "@string/issueNumber_hint"/>
 
                 </LinearLayout>
 
@@ -136,7 +163,7 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textPersonName"
+                        android:inputType="textPersonName|textCapSentences"
                         android:ems="10"
                         android:id="@+id/reporterET"
                         android:layout_weight="1"
@@ -166,6 +193,8 @@
                         android:layout_weight="5"
                         android:gravity="top"
                         android:elevation="10dp"
+                        android:inputType="textLongMessage|textCapSentences"
+                        android:imeOptions="actionDone"
                         android:hint = "@string/edittext_hint"/>
 
                 </LinearLayout>

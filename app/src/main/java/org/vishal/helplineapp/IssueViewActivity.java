@@ -1,6 +1,7 @@
 package org.vishal.helplineapp;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,14 +10,18 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.appindexing.AppIndex;
@@ -33,6 +38,9 @@ import com.google.firebase.database.ValueEventListener;
 import org.vishal.helplineapp.model.Issue;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -43,7 +51,7 @@ public class IssueViewActivity extends AppCompatActivity {
     private EditText m_nameET;
     private EditText m_reporterET;
     private EditText m_descET;
-    private EditText m_issueNumberET;
+    private TextView m_issueNumberET;
 
     private Button m_editButton;
 
@@ -60,6 +68,7 @@ public class IssueViewActivity extends AppCompatActivity {
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
+    private TextView m_dateTV;
 
 
     @Override
@@ -117,7 +126,23 @@ public class IssueViewActivity extends AppCompatActivity {
         m_nameET = (EditText) findViewById(R.id.nameET);
         m_reporterET = (EditText) findViewById(R.id.reporterET);
         m_descET = (EditText) findViewById(R.id.descET);
-        m_issueNumberET = (EditText) findViewById(R.id.issueNumberEditText);
+        m_descET.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId== EditorInfo.IME_ACTION_DONE){
+                    //Clear focus here from edittext
+                    m_descET.clearFocus();
+                    if (v != null) {
+                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    }
+                }
+                return false;
+            }
+        });
+        m_issueNumberET = (TextView) findViewById(R.id.issueNumberTV);
+        m_issueNumberET.setEnabled(true);
+        m_dateTV = (TextView) findViewById(R.id.issueDateView);
 
         m_editButton = (Button) findViewById(R.id.editButton);
 
@@ -144,7 +169,11 @@ public class IssueViewActivity extends AppCompatActivity {
         m_descET.setText(issueMap.get(issueNumber).getDescription());
         m_descET.setEnabled(false);
         m_issueNumberET.setText(issueNumber);
-        m_issueNumberET.setEnabled(false);
+
+
+        Date issueDate = new Date(Long.parseLong(issueMap.get(issueNumber).getDate()));
+
+        m_dateTV.setText(issueDate.toString());
 
 
 
@@ -165,6 +194,10 @@ public class IssueViewActivity extends AppCompatActivity {
                     Log.d(TAG, "Value is: " + issueMap.toString());
                     setUpSpinner();
                 }
+                else {
+                    clearSpinner();
+                }
+
             }
 
             @Override
@@ -173,6 +206,15 @@ public class IssueViewActivity extends AppCompatActivity {
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
+    }
+
+    private void clearSpinner() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item,
+                new String[0]);
+        m_issueSpinner.setAdapter(adapter);
+        prepNewIssue();
+
     }
 
     private void setUpSpinner() {
@@ -187,14 +229,24 @@ public class IssueViewActivity extends AppCompatActivity {
     }
 
 
-    //will return spinner items in the format XXXXXX - name - reporter
+    //will return spinner items in the format 'XXXXXX - name' and sorted from newest first
     private String[] genSpinnerItemsArray() {
-        Set<String> setOfIssueNumbers = issueMap.keySet();
+        List<Issue> issueList = new ArrayList<Issue>(issueMap.values());
+        Collections.sort(issueList, new Comparator<Issue>(){
+            @Override
+            public int compare(Issue o1, Issue o2) {
+                Long issue1 = Long.parseLong(o1.getDate());
+                Long issue2 = Long.parseLong(o2.getDate());
+                int result =  issue2.compareTo(issue1);
+                return result;
+            }
+        });
         List<String> spinnerItems = new ArrayList<String>();
-       for (String issueNumber : setOfIssueNumbers) {
-           Issue issue = issueMap.get(issueNumber);
+       for (int i = 0; i < issueList.size(); i ++) {
+           Issue issue = issueList.get(i);
            spinnerItems.add("" + issue.getNumber() + " - " + issue.getName());
        }
+
        return spinnerItems.toArray(new String[spinnerItems.size()]);
 
     }
@@ -266,9 +318,9 @@ public class IssueViewActivity extends AppCompatActivity {
         m_nameET.setText("");
         m_nameET.setEnabled(true);
 
+        m_dateTV.setText("");
 
-        Issue newIssue = new Issue("", generateNumber(), "", "");
-        m_issueNumberET.setText(newIssue.getNumber());
+        Issue newIssue = new Issue("", generateNumber(), "", "", getCurrentDateString());
         m_editButton.setEnabled(false);
 
         newIssueFlag = true;
@@ -304,7 +356,16 @@ public class IssueViewActivity extends AppCompatActivity {
     public void onClickSaveButton(View view) {
         String issueName = m_nameET.getText().toString();
         String reporterName = m_reporterET.getText().toString();
-        Issue toBeSaved = new Issue(issueName, getCurrentIssue().getNumber(), reporterName, m_descET.getText().toString());
+        Issue toBeSaved = new Issue();
+        if(getCurrentIssue() == null) {
+            toBeSaved = new Issue(issueName, generateNumber(), reporterName,
+                    m_descET.getText().toString(), getCurrentDateString());
+        }
+        else {
+            toBeSaved = new Issue(issueName, getCurrentIssue().getNumber(), reporterName,
+                    m_descET.getText().toString(), getCurrentIssue().getDate());
+        }
+
 
         saveIssueInDatabse(toBeSaved);
 
@@ -317,17 +378,9 @@ public class IssueViewActivity extends AppCompatActivity {
 
     public void onClickEditButton(View view) {
         Button editButton = (Button) view;
-        if( editButton.getText() == getString(R.string.discard))
-        {
-
-        }
-        else
-        {
-            m_nameET.setEnabled(true);
-            m_reporterET.setEnabled(true);
-            m_descET.setEnabled(true);
-        }
-
+        m_nameET.setEnabled(true);
+        m_reporterET.setEnabled(true);
+        m_descET.setEnabled(true);
     }
 
 
@@ -366,5 +419,10 @@ public class IssueViewActivity extends AppCompatActivity {
         return null;
 
 
+    }
+
+    public String getCurrentDateString() {
+        Date currentDate = new Date();
+        return Long.toString(currentDate.getTime());
     }
 }
