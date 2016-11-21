@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private static boolean mLoginSuccess;
     private static boolean mAuthInProgress;
 
-    private static final String TAG = "HelpLineApp";
+    private static final String TAG = "IssueTracker";
 
 
 
@@ -122,8 +122,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     startActivity(new Intent(getApplicationContext(), IssueViewActivity.class));
-                } else {
-                    Toast.makeText(LoginActivity.this, "User is now logged out", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -259,7 +257,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 mAuthInProgress = false;
                                 showProgress(false);
                                 if(mLoginSuccess) {
-                                    Toast.makeText(LoginActivity.this, "Success",
+                                    Toast.makeText(LoginActivity.this, "Successully Logged In!",
                                             Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(getApplicationContext(), IssueViewActivity.class));
                                 }

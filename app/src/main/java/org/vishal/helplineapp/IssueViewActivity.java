@@ -59,7 +59,7 @@ public class IssueViewActivity extends AppCompatActivity {
 
     private HashMap<String, Issue> issueMap;
 
-    private static final String TAG = "HelpLineApp";
+    private static final String TAG = "IssueTracker";
     private Spinner m_issueSpinner;
 
     private Boolean newIssueFlag = false;
