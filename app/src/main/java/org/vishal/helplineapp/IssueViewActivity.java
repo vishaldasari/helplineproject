@@ -356,6 +356,7 @@ public class IssueViewActivity extends AppCompatActivity {
 
 
     private Issue getCurrentIssue() {
+
         if(issueMap!= null) {
             if(issueMap.size() > 0) {
                 String issueNumber = ((String)m_issueSpinner.getSelectedItem()).substring(0,6);
