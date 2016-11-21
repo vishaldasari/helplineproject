@@ -17,11 +17,11 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true">
+        android:layout_alignParentStart="true">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -110,18 +110,12 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:inputType="textPersonName"
+                        android:enabled="false"
                         android:ems="10"
                         android:id="@+id/issueNumberEditText"
                         android:layout_weight="1"
-                        android:elevation="10dp" />
-
-                    <Button
-                        android:text="Generate"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/button3"
-                        android:layout_weight="1"
-                        android:onClick="onGenerateClick" />
+                        android:elevation="10dp"
+                        android:hint= "@string/issueNumber_hint" />
 
                 </LinearLayout>
 
@@ -185,7 +179,7 @@
                         android:text="Edit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editbutton"
+                        android:id="@+id/editButton"
                         android:layout_weight="1"
                         android:layout_marginLeft="25dp"
                         android:layout_marginRight="25dp"

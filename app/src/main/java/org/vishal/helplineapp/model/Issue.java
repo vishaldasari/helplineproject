@@ -9,23 +9,17 @@ public class Issue {
     private String m_name;
     private String m_reporter;
     private String m_description;
-    private int m_number;
+    private String m_number;
 
     public Issue() {}
 
-    public Issue (String name,int number, String reporter , String description ) {
+    public Issue (String name,String number, String reporter , String description  ) {
         setName(name);
         setNumber(number);
         setReporter(reporter);
         setDescription(description);
     }
 
-
-    public Issue (String name, String reporter , String description ) {
-        setName(name);
-        setReporter(reporter);
-        setDescription(description);
-    }
 
 
 
@@ -54,11 +48,11 @@ public class Issue {
         this.m_description = m_description;
     }
 
-    public int getNumber() {
+    public String getNumber() {
         return m_number;
     }
 
-    public void setNumber(int m_number) {
+    public void setNumber(String m_number) {
         this.m_number = m_number;
     }
 }
