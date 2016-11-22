@@ -1,6 +1,9 @@
 package org.vishal.helplineapp;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +13,7 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -44,7 +48,9 @@ public class TService extends Service {
     @Override
     public void onDestroy() {
         Log.d("service", "destroy");
-
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(-99);
         super.onDestroy();
     }
 
@@ -72,10 +78,43 @@ public class TService extends Service {
         this.br_call = new CallBr();
         this.registerReceiver(this.br_call, filter);
 
+
+        startNotification();
+
         // if(terminate != null) {
         // stopSelf();
         // }
         return START_NOT_STICKY;
     }
 
+    private void startNotification() {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.common_google_signin_btn_text_light_focused)
+                        .setContentTitle("My notification")
+                        .setOngoing(true)
+                        .setContentText("Recording!");
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, IssueViewActivity.class);
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(IssueViewActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        // mId allows you to update the notification later on.
+        mNotificationManager.notify(-99, mBuilder.build());
+    }
 }

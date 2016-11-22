@@ -55,13 +55,13 @@ public class CallBr extends BroadcastReceiver {
                         Toast.makeText(context, "ANSWERED", Toast.LENGTH_LONG).show();
 
                         String out = new SimpleDateFormat("dd-MM-yyyy hh-mm-ss").format(new Date());
-                        File sampleDir = new File(Environment.getExternalStorageDirectory(), "/TestRecordingDasa1");
+                        File sampleDir = new File(Environment.getExternalStorageDirectory(), "/issuetrackerRecordings");
                         if (!sampleDir.exists()) {
                             sampleDir.mkdirs();
                         }
                         String file_name = "Record";
                         try {
-                            audiofile = File.createTempFile(file_name, ".amr", sampleDir);
+                            audiofile = File.createTempFile(file_name, ".mp4", sampleDir);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -71,8 +71,8 @@ public class CallBr extends BroadcastReceiver {
 //                          recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
 
                         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                        recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
-                        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                        recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+                        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
                         recorder.setOutputFile(audiofile.getAbsolutePath());
                         try {
                             recorder.prepare();

@@ -152,37 +152,14 @@ public class IssueViewActivity extends AppCompatActivity implements ActivityComp
         database = FirebaseDatabase.getInstance();
         setUpDatabase();
 
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-
-
         ActivityCompat.requestPermissions(this,
                 new String[]{android.Manifest.permission.READ_PHONE_STATE},
                 1);
-//        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED) {
-//
-//            // Should we show an explanation?
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(this,android.Manifest.permission.READ_PHONE_STATE)) {
-//
-//                // Show an expanation to the user *asynchronously* -- don't block
-//                // this thread waiting for the user's response! After the user
-//                // sees the explanation, try again to request the permission.
-//
-//            } else {
-//
-//                // No explanation needed, we can request the permission.
-//
-//                ActivityCompat.requestPermissions(this,
-//                        new String[]{android.Manifest.permission.READ_PHONE_STATE},
-//                        1);
-//
-//                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-//                // app-defined int constant. The callback method gets the
-//                // result of the request.
-//            }
-//        }
+        Intent myIntent = new Intent(getApplicationContext(), TService.class);
+        startService(myIntent);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     /**
