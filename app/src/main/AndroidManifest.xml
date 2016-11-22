@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.STORAGE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
 
     <application
         android:allowBackup="true"
@@ -29,24 +29,33 @@
             </intent-filter>
         </activity>
 
+
         <receiver
-            android:name=".DeviceAdminDemo"
-            android:permission="android.permission.BIND_DEVICE_ADMIN">
-            <meta-data
-                android:name="android.app.admin"
-                android:resource="@xml/my_admin" />
+            android:name=".CallBr"
+            android:enabled="true"
+            android:exported="true">
 
             <intent-filter>
-                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
-                <action android:name="android.app.action.DEVICE_ADMIN_DISABLED" />
-                <action android:name="android.app.action.DEVICE_ADMIN_DISABLE_REQUESTED" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.NEW_OUTGOING_CALL"/>-->
+
 
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
 
-        <service android:name=".TService" />
+        <service android:name=".TService"
+            android:enabled="true"
+            android:exported="false">
+
+        <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED" />
+            <action android:name="android.intent.action.NEW_OUTGOING_CALL"/>-->
+
+
+            <category android:name="android.intent.category.HOME" />
+        </intent-filter>
+        </service>
 
         <activity
             android:name=".SettingsActivity"
@@ -55,7 +64,7 @@
             android:name=".IssueViewActivity"
             android:label="@string/title_activity_issue_view"
             android:theme="@style/AppTheme.NoActionBar"></activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+     App Indexing.  See https://   g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
