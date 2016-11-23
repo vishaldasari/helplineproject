@@ -81,38 +81,25 @@ public class IssueViewActivity extends AppCompatActivity implements ActivityComp
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setAlpha((float) .25);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar snackbar = Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG);
-                snackbar.setCallback(new Snackbar.Callback() {
-                    @Override
-                    public void onDismissed(Snackbar snackbar, int event) {
-                        super.onDismissed(snackbar, event);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ((FloatingActionButton) findViewById(R.id.fab)).setAlpha((float) .25);
-                            }
-                        });
-                    }
+        setUpFAB();
+        setUpUI();
 
-                    @Override
-                    public void onShown(Snackbar snackbar) {
-                        super.onShown(snackbar);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ((FloatingActionButton) findViewById(R.id.fab)).setAlpha((float) 1);
-                            }
-                        });
-                    }
-                });
-                snackbar.setAction("Action", null).show();
-            }
-        });
+        database = FirebaseDatabase.getInstance();
+        setUpDatabase();
+
+        ActivityCompat.requestPermissions(this,
+                new String[]{android.Manifest.permission.READ_PHONE_STATE},
+                1);
+        Intent myIntent = new Intent(getApplicationContext(), TService.class);
+        startService(myIntent);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        handleIntent();
+    }
+
+    private void setUpUI() {
         m_issueSpinner = (Spinner) findViewById(R.id.issueSpinner);
         m_issueSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -148,18 +135,10 @@ public class IssueViewActivity extends AppCompatActivity implements ActivityComp
         m_dateTV = (TextView) findViewById(R.id.issueDateView);
 
         m_editButton = (Button) findViewById(R.id.editButton);
+    }
 
-        database = FirebaseDatabase.getInstance();
-        setUpDatabase();
+    private void handleIntent() {
 
-        ActivityCompat.requestPermissions(this,
-                new String[]{android.Manifest.permission.READ_PHONE_STATE},
-                1);
-        Intent myIntent = new Intent(getApplicationContext(), TService.class);
-        startService(myIntent);
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     /**
@@ -442,5 +421,41 @@ public class IssueViewActivity extends AppCompatActivity implements ActivityComp
     public String getCurrentDateString() {
         Date currentDate = new Date();
         return Long.toString(currentDate.getTime());
+    }
+
+
+    private void setUpFAB() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setAlpha((float) .25);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar snackbar = Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG);
+                snackbar.setCallback(new Snackbar.Callback() {
+                    @Override
+                    public void onDismissed(Snackbar snackbar, int event) {
+                        super.onDismissed(snackbar, event);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((FloatingActionButton) findViewById(R.id.fab)).setAlpha((float) .25);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onShown(Snackbar snackbar) {
+                        super.onShown(snackbar);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((FloatingActionButton) findViewById(R.id.fab)).setAlpha((float) 1);
+                            }
+                        });
+                    }
+                });
+                snackbar.setAction("Action", null).show();
+            }
+        });
     }
 }

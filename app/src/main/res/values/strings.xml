@@ -98,4 +98,8 @@
     <string name="action_delete">Delete</string>
     <string name="action_new">New</string>
     <string name="discard">Discard</string>
+    <string name="recording_service_active">Recording service active!</string>
+    <string name="recording_call_from">Recording call from:</string>
+    <string name="recieved_call_from_new_issue">Click here to create a new issue.</string>
+    <string name="recording_ended">Call Ended:</string>
 </resources>

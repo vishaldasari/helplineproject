@@ -1,5 +1,8 @@
 package org.vishal.helplineapp;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +10,7 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
@@ -22,16 +26,6 @@ import java.util.Timer;
 public class CallBr extends BroadcastReceiver {
     MediaRecorder recorder;
     File audiofile;
-    String name, phonenumber;
-    String audio_format;
-    public String Audio_Type;
-    int audioSource;
-    Context context;
-    private Handler handler;
-    Timer timer;
-    Boolean offHook = false, ringing = false;
-    Toast toast;
-    Boolean isOffHook = false;
     private boolean recordstarted = false;
     Bundle bundle;
     String state;
@@ -39,6 +33,7 @@ public class CallBr extends BroadcastReceiver {
     public boolean wasRinging = false;
     private static final String ACTION_IN = "android.intent.action.PHONE_STATE";
     private static final String ACTION_OUT = "android.intent.action.NEW_OUTGOING_CALL";
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -52,24 +47,21 @@ public class CallBr extends BroadcastReceiver {
                 } else if (state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
                     if (wasRinging == true) {
 
-                        Toast.makeText(context, "ANSWERED", Toast.LENGTH_LONG).show();
+                        NotificationHelper.fireNotification(context,NotificationHelper.ONGOING_NOTIFICATION, context.getString(R.string.recording_call_from)+ " " + inCall);
 
                         String out = new SimpleDateFormat("dd-MM-yyyy hh-mm-ss").format(new Date());
                         File sampleDir = new File(Environment.getExternalStorageDirectory(), "/issuetrackerRecordings");
                         if (!sampleDir.exists()) {
                             sampleDir.mkdirs();
                         }
-                        String file_name = "Record";
+                        String file_name = "Call-" + out + "-" + inCall;
                         try {
                             audiofile = File.createTempFile(file_name, ".mp4", sampleDir);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        String path = Environment.getExternalStorageDirectory().getAbsolutePath();
 
                         recorder = new MediaRecorder();
-//                          recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
-
                         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                         recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
                         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
@@ -86,9 +78,11 @@ public class CallBr extends BroadcastReceiver {
                     }
                 } else if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
                     wasRinging = false;
-                    Toast.makeText(context, "REJECT || DISCO", Toast.LENGTH_LONG).show();
                     if (recordstarted) {
                         recorder.stop();
+                        NotificationHelper.fireNotification(context,NotificationHelper.ONGOING_NOTIFICATION, context.getString(R.string.recording_service_active));
+                        NotificationHelper.fireNotification(context,NotificationHelper.ONETIME_NOTIFICATION, context.getString(R.string.recieved_call_from_new_issue) + " " + inCall,inCall);
+
                         recordstarted = false;
                     }
                 }
