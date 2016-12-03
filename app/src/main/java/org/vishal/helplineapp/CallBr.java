@@ -81,7 +81,7 @@ public class CallBr extends BroadcastReceiver {
                     if (recordstarted) {
                         recorder.stop();
                         NotificationHelper.fireNotification(context,NotificationHelper.ONGOING_NOTIFICATION, context.getString(R.string.recording_service_active));
-                        NotificationHelper.fireNotification(context,NotificationHelper.ONETIME_NOTIFICATION, context.getString(R.string.recieved_call_from_new_issue) + " " + inCall,inCall);
+                        NotificationHelper.fireNotification(context,NotificationHelper.ONETIME_NOTIFICATION, context.getString(R.string.recieved_call_from_new_issue) + " " + inCall,inCall, audiofile.getPath());
 
                         recordstarted = false;
                     }

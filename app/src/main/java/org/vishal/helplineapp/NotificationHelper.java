@@ -23,7 +23,7 @@ public class NotificationHelper {
     }
 
 
-    public static void fireNotification (Context m_context, int type, String message, String phoneNumber) {
+    public static void fireNotification (Context m_context, int type, String message, String phoneNumber, String path) {
         boolean ongoing = (type == NotificationHelper.ONGOING_NOTIFICATION) ? true : false;
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(m_context)
@@ -33,7 +33,8 @@ public class NotificationHelper {
                         .setContentText(message);
         Intent resultIntent = new Intent(m_context, IssueViewActivity.class);
         if(phoneNumber != null) {
-            resultIntent.putExtra("INCOMINGPHONENUMBER", phoneNumber);
+            resultIntent.putExtra("INCOMINGNUMBER", phoneNumber);
+            resultIntent.putExtra("MP4PATH", path);
             mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(message));
             mBuilder.setContentTitle(m_context.getString(R.string.recording_ended));
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(m_context);
@@ -63,7 +64,7 @@ public class NotificationHelper {
     }
 
     public static void fireNotification (Context m_context, int type, String message) {
-        fireNotification(m_context,type,message,null);
+        fireNotification(m_context,type,message,null, null);
     }
     public static void destroyNotification(Context m_context, int id) {
         NotificationManager mNotificationManager =

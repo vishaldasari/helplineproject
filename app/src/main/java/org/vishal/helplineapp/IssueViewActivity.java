@@ -41,6 +41,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.vishal.helplineapp.model.Issue;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -138,7 +139,13 @@ public class IssueViewActivity extends AppCompatActivity implements ActivityComp
     }
 
     private void handleIntent() {
+        String incomingNumber = getIntent().getStringExtra("INCOMINGNUMBER");
+        if(incomingNumber!= null) {
+            String pathname = getIntent().getStringExtra("MP4PATH");
+            File mp4 = new File(pathname);
 
+            mp4.toString();
+        }
     }
 
     /**
