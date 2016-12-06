@@ -1,5 +1,7 @@
 package org.vishal.helplineapp;
 
+import android.*;
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -54,6 +56,7 @@ public class IssueViewActivity extends AppCompatActivity implements ActivityComp
 
     private EditText m_nameET;
     private EditText m_reporterET;
+    private EditText m_phoneNumberET;
     private EditText m_descET;
     private TextView m_issueNumberET;
 
@@ -89,7 +92,7 @@ public class IssueViewActivity extends AppCompatActivity implements ActivityComp
         setUpDatabase();
 
         ActivityCompat.requestPermissions(this,
-                new String[]{android.Manifest.permission.READ_PHONE_STATE},
+                new String[]{android.Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO },
                 1);
         Intent myIntent = new Intent(getApplicationContext(), TService.class);
         startService(myIntent);
@@ -117,6 +120,7 @@ public class IssueViewActivity extends AppCompatActivity implements ActivityComp
         m_nameET = (EditText) findViewById(R.id.nameET);
         m_reporterET = (EditText) findViewById(R.id.reporterET);
         m_descET = (EditText) findViewById(R.id.descET);
+        m_phoneNumberET = (EditText) findViewById(R.id.phoneNumberET);
         m_descET.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -134,6 +138,7 @@ public class IssueViewActivity extends AppCompatActivity implements ActivityComp
         m_issueNumberET = (TextView) findViewById(R.id.issueNumberTV);
         m_issueNumberET.setEnabled(true);
         m_dateTV = (TextView) findViewById(R.id.issueDateView);
+
 
         m_editButton = (Button) findViewById(R.id.editButton);
     }
@@ -173,6 +178,15 @@ public class IssueViewActivity extends AppCompatActivity implements ActivityComp
         m_descET.setText(issueMap.get(issueNumber).getDescription());
         m_descET.setEnabled(false);
         m_issueNumberET.setText(issueNumber);
+
+        if(issueMap.get(issueNumber).getPhoneNumber() == null) {
+            m_phoneNumberET.setText("");
+        }
+        else {
+            m_phoneNumberET.setText(issueMap.get(issueNumber).getPhoneNumber());
+        }
+        m_phoneNumberET.setEnabled(false);
+
 
 
         Date issueDate = new Date(Long.parseLong(issueMap.get(issueNumber).getDate()));
@@ -321,10 +335,12 @@ public class IssueViewActivity extends AppCompatActivity implements ActivityComp
         m_reporterET.setEnabled(true);
         m_nameET.setText("");
         m_nameET.setEnabled(true);
+        m_phoneNumberET.setEnabled(true);
+        m_phoneNumberET.setText("");
 
         m_dateTV.setText("");
 
-        Issue newIssue = new Issue("", generateNumber(), "", "", getCurrentDateString());
+        Issue newIssue = new Issue("", generateNumber(), "", "", getCurrentDateString(), "");
         m_editButton.setEnabled(false);
 
         newIssueFlag = true;
@@ -360,14 +376,15 @@ public class IssueViewActivity extends AppCompatActivity implements ActivityComp
     public void onClickSaveButton(View view) {
         String issueName = m_nameET.getText().toString();
         String reporterName = m_reporterET.getText().toString();
+        String phoneNumber = m_phoneNumberET.getText().toString();
         Issue toBeSaved = new Issue();
         if(getCurrentIssue() == null) {
             toBeSaved = new Issue(issueName, generateNumber(), reporterName,
-                    m_descET.getText().toString(), getCurrentDateString());
+                    m_descET.getText().toString(), getCurrentDateString(), phoneNumber);
         }
         else {
             toBeSaved = new Issue(issueName, getCurrentIssue().getNumber(), reporterName,
-                    m_descET.getText().toString(), getCurrentIssue().getDate());
+                    m_descET.getText().toString(), getCurrentIssue().getDate(), phoneNumber);
         }
 
 
@@ -376,15 +393,16 @@ public class IssueViewActivity extends AppCompatActivity implements ActivityComp
         m_descET.setEnabled(false);
         m_reporterET.setEnabled(false);
         m_nameET.setEnabled(false);
+        m_phoneNumberET.setEnabled(false);
 
     }
 
 
     public void onClickEditButton(View view) {
-        Button editButton = (Button) view;
         m_nameET.setEnabled(true);
         m_reporterET.setEnabled(true);
         m_descET.setEnabled(true);
+        m_phoneNumberET.setEnabled(true);
     }
 
 

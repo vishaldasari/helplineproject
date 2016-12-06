@@ -11,15 +11,17 @@ public class Issue {
     private String m_description;
     private String m_number;
     private String m_date;
+    private String m_phoneNumber;
 
     public Issue() {}
 
-    public Issue (String name,String number, String reporter , String description, String date  ) {
+    public Issue (String name,String number, String reporter , String description, String date, String phoneNumber  ) {
         setName(name);
         setNumber(number);
         setReporter(reporter);
         setDescription(description);
         setDate(date);
+        setPhoneNumber(phoneNumber);
     }
 
 
@@ -65,4 +67,13 @@ public class Issue {
     public void setDate(String date) {
         this.m_date = date;
     }
+
+    public String getPhoneNumber() {
+        return m_phoneNumber;
+    }
+
+    public void setPhoneNumber(String m_phoneNumber) {
+        this.m_phoneNumber = m_phoneNumber;
+    }
+
 }
