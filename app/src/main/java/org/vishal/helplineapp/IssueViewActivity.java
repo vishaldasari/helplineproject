@@ -1,18 +1,17 @@
 package org.vishal.helplineapp;
 
-import android.*;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -32,6 +31,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,6 +41,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.vishal.helplineapp.model.Issue;
 
@@ -76,6 +80,7 @@ public class IssueViewActivity extends AppCompatActivity implements ActivityComp
      */
     private GoogleApiClient client;
     private TextView m_dateTV;
+    private StorageReference m_storageRef;
 
 
     @Override
@@ -89,6 +94,7 @@ public class IssueViewActivity extends AppCompatActivity implements ActivityComp
         setUpUI();
 
         database = FirebaseDatabase.getInstance();
+        m_storageRef = FirebaseStorage.getInstance().getReference();
         setUpDatabase();
 
         ActivityCompat.requestPermissions(this,
@@ -148,8 +154,8 @@ public class IssueViewActivity extends AppCompatActivity implements ActivityComp
         if(incomingNumber!= null) {
             String pathname = getIntent().getStringExtra("MP4PATH");
             File mp4 = new File(pathname);
-
-            mp4.toString();
+            Issue issueFromRecording = prepNewIssue(incomingNumber, mp4);
+            saveIssueInDatabse(issueFromRecording);
         }
     }
 
@@ -325,9 +331,7 @@ public class IssueViewActivity extends AppCompatActivity implements ActivityComp
         return super.onOptionsItemSelected(item);
     }
 
-
-
-    private Issue prepNewIssue() {
+    private Issue prepNewIssue(String phoneNumber, File file) {
         m_issueNumberET.setText("");
         m_descET.setText("");
         m_descET.setEnabled(true);
@@ -340,7 +344,15 @@ public class IssueViewActivity extends AppCompatActivity implements ActivityComp
 
         m_dateTV.setText("");
 
-        Issue newIssue = new Issue("", generateNumber(), "", "", getCurrentDateString(), "");
+        Issue newIssue;
+
+        if(file == null) {
+            newIssue = new Issue("", generateNumber(), "", "", getCurrentDateString(), phoneNumber);
+        }
+        else {
+            newIssue = new Issue("", generateNumber(), "", "", getCurrentDateString(), phoneNumber, file);
+        }
+
         m_editButton.setEnabled(false);
 
         newIssueFlag = true;
@@ -349,9 +361,39 @@ public class IssueViewActivity extends AppCompatActivity implements ActivityComp
 
     }
 
+
+    private Issue prepNewIssue() {
+        return prepNewIssue("", null);
+
+    }
+
     private void saveIssueInDatabse(Issue toBeSaved) {
         DatabaseReference issueDataRef = database.getReference("issues/" + getCurrentUserUID() + "/" + toBeSaved.getNumber());
         issueDataRef.setValue(toBeSaved);
+
+        if(toBeSaved.getCallRecording() != null) {
+            Uri file = Uri.fromFile(toBeSaved.getCallRecording());
+            int size = file.getPathSegments().size();
+            String pathName = "files/" + getCurrentUserUID() + file.getPathSegments().get( size -1);
+            StorageReference riversRef = m_storageRef.child(pathName);
+
+            riversRef.putFile(file)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            // Get a URL to the uploaded content
+                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle unsuccessful uploads
+                            // ...
+                        }
+                    });
+
+        }
 
     }
 

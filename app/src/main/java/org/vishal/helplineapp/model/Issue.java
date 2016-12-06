@@ -1,5 +1,7 @@
 package org.vishal.helplineapp.model;
 
+import java.io.File;
+
 /**
  * Created by Vishal on 11/17/2016.
  */
@@ -12,6 +14,7 @@ public class Issue {
     private String m_number;
     private String m_date;
     private String m_phoneNumber;
+    private File m_callRecording;
 
     public Issue() {}
 
@@ -22,6 +25,16 @@ public class Issue {
         setDescription(description);
         setDate(date);
         setPhoneNumber(phoneNumber);
+        setCallRecording(null);
+    }
+    public Issue (String name,String number, String reporter , String description, String date, String phoneNumber, File callRecording ) {
+        setName(name);
+        setNumber(number);
+        setReporter(reporter);
+        setDescription(description);
+        setDate(date);
+        setPhoneNumber(phoneNumber);
+        setCallRecording(callRecording);
     }
 
 
@@ -76,4 +89,11 @@ public class Issue {
         this.m_phoneNumber = m_phoneNumber;
     }
 
+    public File getCallRecording() {
+        return m_callRecording;
+    }
+
+    public void setCallRecording(File m_callRecording) {
+        this.m_callRecording = m_callRecording;
+    }
 }
